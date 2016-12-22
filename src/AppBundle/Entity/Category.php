@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Category
@@ -47,12 +48,34 @@ class Category
     private $parent;
 
     /**
+     * @ORM\ManyToMany(targetEntity="PropertyClass", inversedBy="categories", fetch="EAGER")
+     * @Assert\Valid()
+     */
+    private $propertyClasses;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Brand", inversedBy="categories")
+     * @ORM\JoinTable(name="brands_categories")
+     */
+    private $brands;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->propertyClasses = new ArrayCollection();
+        $this->brands = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 
     /**
@@ -181,5 +204,73 @@ class Category
     public function getProducts()
     {
         return $this->products;
+    }
+
+    /**
+     * Add propertyClass
+     *
+     * @param \AppBundle\Entity\PropertyClass $propertyClass
+     *
+     * @return Category
+     */
+    public function addPropertyClass(\AppBundle\Entity\PropertyClass $propertyClass)
+    {
+        $this->propertyClasses[] = $propertyClass;
+
+        return $this;
+    }
+
+    /**
+     * Remove propertyClass
+     *
+     * @param \AppBundle\Entity\PropertyClass $propertyClass
+     */
+    public function removePropertyClass(\AppBundle\Entity\PropertyClass $propertyClass)
+    {
+        $this->propertyClasses->removeElement($propertyClass);
+    }
+
+    /**
+     * Get propertyClasses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPropertyClasses()
+    {
+        return $this->propertyClasses;
+    }
+
+    /**
+     * Add brand
+     *
+     * @param \AppBundle\Entity\Brand $brand
+     *
+     * @return Category
+     */
+    public function addBrand(\AppBundle\Entity\Brand $brand)
+    {
+        $this->brands[] = $brand;
+
+        return $this;
+    }
+
+    /**
+     * Remove brand
+     *
+     * @param \AppBundle\Entity\Brand $brand
+     */
+    public function removeBrand(\AppBundle\Entity\Brand $brand)
+    {
+        $this->brands->removeElement($brand);
+    }
+
+    /**
+     * Get brands
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBrands()
+    {
+        return $this->brands;
     }
 }

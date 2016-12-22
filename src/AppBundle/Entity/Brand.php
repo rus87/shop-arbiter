@@ -35,7 +35,7 @@ class Brand
     private $products;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Category", inversedBy="brands")
+     * @ORM\ManyToMany(targetEntity="Category", mappedBy="brands")
      * @ORM\JoinTable(name="brands_categories")
      */
     private $categories;
@@ -49,6 +49,14 @@ class Brand
         $this->title = $title;
         $this->products = new ArrayCollection();
         $this->categories = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getTitle();
     }
 
 

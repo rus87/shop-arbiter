@@ -30,12 +30,29 @@ abstract class AbstractProperty
      */
     protected $id;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product", inversedBy="properties")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    protected $product;
+
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=50)
+     * @ORM\Column(name="value", type="string")
      */
-    protected $name;
+    private $value;
+
+
+    /**
+     * Fatness constructor.
+     * @param int $value
+     */
+    public function __construct($value)
+    {
+        $this->value = $value;
+    }
 
 
     /**
@@ -48,28 +65,28 @@ abstract class AbstractProperty
         return $this->id;
     }
 
+
     /**
-     * Set name
+     * Set product
      *
-     * @param string $name
+     * @param \AppBundle\Entity\Product $product
      *
      * @return AbstractProperty
      */
-    public function setName($name)
+    public function setProduct(\AppBundle\Entity\Product $product = null)
     {
-        $this->name = $name;
+        $this->product = $product;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get product
      *
-     * @return string
+     * @return \AppBundle\Entity\Product
      */
-    public function getName()
+    public function getProduct()
     {
-        return $this->name;
+        return $this->product;
     }
 }
-

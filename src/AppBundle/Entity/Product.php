@@ -30,7 +30,7 @@ class Product
     private $title;
 
     /**
-     * @ORM\OneTomany(targetEntity="ProductShopInfo", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="ProductShopInfo", mappedBy="product", orphanRemoval=true)
      */
     private $productShopInfos;
 
@@ -41,11 +41,23 @@ class Product
     private $category;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Brand", inversedBy="products")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $brand;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Property\AbstractProperty", mappedBy="product", cascade={"persist", "remove"})
+     */
+    private $properties;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->productShopInfos = new ArrayCollection();
+        $this->properties = new ArrayCollection();
     }
 
 
@@ -141,5 +153,65 @@ class Product
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Set brand
+     *
+     * @param \AppBundle\Entity\Brand $brand
+     *
+     * @return Product
+     */
+    public function setBrand(\AppBundle\Entity\Brand $brand = null)
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * Get brand
+     *
+     * @return \AppBundle\Entity\Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * Add property
+     *
+     * @param \AppBundle\Entity\Property\AbstractProperty $property
+     *
+     * @return Product
+     */
+    public function addProperty(\AppBundle\Entity\Property\AbstractProperty $property)
+    {
+        $this->properties[] = $property;
+        $property->setProduct($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove property
+     *
+     * @param \AppBundle\Entity\Property\AbstractProperty $property
+     */
+    public function removeProperty(\AppBundle\Entity\Property\AbstractProperty $property)
+    {
+        $this->properties->removeElement($property);
+        $property->setProduct(null);
+    }
+
+    /**
+     * Get properties
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProperties()
+    {
+        return $this->properties;
     }
 }
